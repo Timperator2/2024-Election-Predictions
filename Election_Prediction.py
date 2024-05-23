@@ -459,7 +459,7 @@ def draw_map(data,votes,save=""):
 
 
 
-def guessState(state, types = ["President", "Governor", "House", "Senate"], weights = 1, remove_categories=[]):
+def guessState(state, types = ["President", "Governor", "House", "Senate"], weights = "1", remove_categories=[]):
 
     if weights == "1":
         weights = {'Poll': {'President': 3.922056737763325, 'Governor': 0.24377747495366536, 'House': 0.8760269469490899,'Senate': 3.2183803868768313},'Result': {'President': 5.7315133961026352, 'Governor': 1.2760668235627581, 'House': 5.218783078519769,'Senate': 0.27790176469216227},'Demography': {'under 18': 1.9620097199766293, 'over 65': 0.5206315032409361,'white': 0.3185659006039876, 'university': 1.546164521787542,'demography': 0.3995317263110895, 'total': 1.2343248401351306},'Keys': {'total': 2.300460817665445}}
@@ -501,7 +501,7 @@ def guessState(state, types = ["President", "Governor", "House", "Senate"], weig
     return swing
 
 
-def simulateElection(types = ["President", "Governor", "House", "Senate"],  states = electoral_votes, weights = 1,save="",remove_categories=[]):
+def simulateElection(types = ["President", "Governor", "House", "Senate"],  states = electoral_votes, weights = "1",save="",remove_categories=[]):
 
     data = load_map_data()
 
