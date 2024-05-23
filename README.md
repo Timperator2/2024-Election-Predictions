@@ -6,7 +6,7 @@ This repository contains the code and data for a project that aims to predict th
 
 This project showcases a half-serious attempt to predict the outcome of the US 2024 presidential elections. The reliability of polls with regard to elections is a topic of recurring debate. This is also the case in this election cycle, in which many polls show shifts in the electorate that seem unrealistic to some observers, such as a strong gain for Trump among young voters. While I don't feel qualified to judge the extent to which this is true, this model is based on the assumption that there is something to it and that polls alone are not enough to give us a realistic picture of the election outcome (otherwise there would be no need to make a model like this and I wanted to make a model, so here we are). Overall, this model is more of an experiment than a truly mathematically sound endeavor, so please keep that in mind.
 
-[A overview of results can be found here](https://github.com/username/repository/blob/branch/path/to/index.html)
+[A overview of results can be found here](https://2024-election-predictions.tiiny.site/)
 
 ## Methodology
 
