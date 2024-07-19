@@ -660,8 +660,8 @@ def proposeWeights(upper_bound = 3.0):
 def saveAll(weights):
     simulateElection(weights=weights,save="Weights-" + weights + "-All")
     simulateElection(weights=weights, save="Weights-" + weights + "-Polling",remove_categories=["Result","Demography","Keys"])
-    simulateElection(weights=weights, save="Weights-" + weights + "-Result",remove_categories=["Polling","Demography","Key"])
-    simulateElection(weights=weights, save="Weights-" + weights + "-Demography",remove_categories=["Result","Polling","Key"])
+    simulateElection(weights=weights, save="Weights-" + weights + "-Result",remove_categories=["Poll","Demography","Keys"])
+    simulateElection(weights=weights, save="Weights-" + weights + "-Demography",remove_categories=["Result","Poll","Keys"])
 
 
 
