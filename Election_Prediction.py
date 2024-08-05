@@ -424,7 +424,7 @@ def draw_map(data,votes,save=""):
     ax.set_xticks([])
     ax.set_yticks([])
 
-    ax.text(-95, 25, f'Joe Biden: {votes["DEM"]} Donald Trump: {votes["REP"]}', ha='center', va='center', color='black', fontsize=10, fontweight='bold')
+    ax.text(-95, 25, f'Kamala Harris: {votes["DEM"]} Donald Trump: {votes["REP"]}', ha='center', va='center', color='black', fontsize=10, fontweight='bold')
 
 
     data = pd.concat([data, maine_2,nebraska_2], ignore_index=True)
