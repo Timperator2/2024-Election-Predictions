@@ -91,6 +91,33 @@ electoral_votes = {
     "Wyoming": 3
 }
 
+top_pollsters = [
+    "The New York Times/Siena College",
+    "ABC News/The Washington Post",
+    "Marquette University Law School",
+    "YouGov",
+    "Monmouth University Polling Institute",
+    "Marist College",
+    "Suffolk University",
+    "Data Orbital",
+    "University of Massachusetts Lowell Center for Public Opinion",
+    "Emerson College",
+    "Muhlenberg College Institute of Public Opinion",
+    "Selzer & Co.",
+    "University of North Florida Public Opinion Research Lab",
+    "CNN",
+    "SurveyUSA",
+    "Beacon Research/Shaw & Co. Research",
+    "Quinnipiac University",
+    "MassINC Polling Group",
+    "Ipsos",
+    "Christopher Newport University Wason Center for Civic Leadership"
+]
+
+
+
+
+
 data_buffer = {"Polling" : {},"Results" : {}, "Demography" : {}}
 
 def loadDataInitial(types_polls = ["President", "Governor", "House", "Senate"],types_results = ["President", "Governor", "House", "Senate"], types_demographic = ["state","city"]):
@@ -165,14 +192,18 @@ def getDemographics(type,use_buffer=True):
 
 
 
-def getRecentPolling(type,state,number,party,last_date):
+def getRecentPolling(type,state,number,party,last_date,pollster):
 
     data = getPolling(type)
 
     data['end_date'] = pd.to_datetime(data['end_date'],format='%m/%d/%y')
 
     # Filter the DataFrame based on the specified state, end date and party
-    state_df = data[(data['state'] == state) & (data['end_date'] >= pd.to_datetime(last_date, format='%m/%d/%y')) & (data['party'] == party) & ((data['stage'] == "general") | (data['stage'] == "runoff"))]
+    if pollster:
+        state_df = data[(data['state'] == state) & (data['end_date'] >= pd.to_datetime(last_date, format='%m/%d/%y')) & (data['party'] == party) & ((data['stage'] == "general") | (data['stage'] == "runoff")) & (data['pollster'].isin(top_pollsters))]
+    else:
+        state_df = data[
+            (data['state'] == state) & (data['end_date'] >= pd.to_datetime(last_date, format='%m/%d/%y')) & (data['party'] == party) & ((data['stage'] == "general") | (data['stage'] == "runoff"))]
 
     if type != "House":
 
@@ -459,7 +490,7 @@ def draw_map(data,votes,save=""):
 
 
 
-def guessState(state, types = ["President", "Governor", "House", "Senate"], weights = "1", remove_categories=[]):
+def guessState(state, types = ["President", "Governor", "House", "Senate"], weights = "1", remove_categories=[],pollster=False):
 
     if weights == "1":
         weights = {'Poll': {'President': 3.922056737763325, 'Governor': 0.24377747495366536, 'House': 0.8760269469490899,'Senate': 3.2183803868768313},'Result': {'President': 5.7315133961026352, 'Governor': 1.2760668235627581, 'House': 5.218783078519769,'Senate': 0.27790176469216227},'Demography': {'under 18': 1.9620097199766293, 'over 65': 0.5206315032409361,'white': 0.3185659006039876, 'university': 1.546164521787542,'demography': 0.3995317263110895, 'total': 1.2343248401351306},'Keys': {'total': 2.300460817665445}}
@@ -473,8 +504,8 @@ def guessState(state, types = ["President", "Governor", "House", "Senate"], weig
 
     for type in types:
         try:
-            difference = getRecentPolling(type, state, 5, "DEM", "01/01/23") - getRecentPolling(type, state, 5, "REP",
-                                                                                                "01/01/23")
+            difference = getRecentPolling(type, state, 5, "DEM", "01/01/23",pollster) - getRecentPolling(type, state, 5, "REP",
+                                                                                                "01/01/23",pollster)
         except:
             difference = 0
 
@@ -501,7 +532,7 @@ def guessState(state, types = ["President", "Governor", "House", "Senate"], weig
     return swing
 
 
-def simulateElection(types = ["President", "Governor", "House", "Senate"],  states = electoral_votes, weights = "1",save="",remove_categories=[]):
+def simulateElection(types = ["President", "Governor", "House", "Senate"],  states = electoral_votes, weights = "1",save="",remove_categories=[],pollster=False):
 
     data = load_map_data()
 
@@ -511,7 +542,7 @@ def simulateElection(types = ["President", "Governor", "House", "Senate"],  stat
 
     for state in one_state_votes:
 
-        swing = guessState(state,types,weights,remove_categories=remove_categories)
+        swing = guessState(state,types,weights,remove_categories=remove_categories,pollster=pollster)
 
         if state == "Maine":
             if swing < 150:
@@ -657,11 +688,11 @@ def proposeWeights(upper_bound = 3.0):
     print ("Final Weights:", weights)
 
 
-def saveAll(weights):
-    simulateElection(weights=weights,save="Weights-" + weights + "-All")
-    simulateElection(weights=weights, save="Weights-" + weights + "-Polling",remove_categories=["Result","Demography","Keys"])
-    simulateElection(weights=weights, save="Weights-" + weights + "-Result",remove_categories=["Poll","Demography","Keys"])
-    simulateElection(weights=weights, save="Weights-" + weights + "-Demography",remove_categories=["Result","Poll","Keys"])
+def saveAll(weights,pollster=False):
+    simulateElection(weights=weights,save="Weights-" + weights + "-All" + "OnlyTop20Pollster" + str(pollster),pollster=pollster)
+    simulateElection(weights=weights, save="Weights-" + weights + "-Polling" + "OnlyTop20Pollster" + str(pollster),remove_categories=["Result","Demography","Keys"],pollster=pollster)
+    simulateElection(weights=weights, save="Weights-" + weights + "-Result",remove_categories=["Poll","Demography","Keys"],pollster=pollster)
+    simulateElection(weights=weights, save="Weights-" + weights + "-Demography",remove_categories=["Result","Poll","Keys"],pollster=pollster)
 
 
 
@@ -669,6 +700,7 @@ loadDataInitial()
 
 #proposeWeights(2.0)
 #simulateElection(weights="1")
+
 saveAll("1")
 saveAll("2")
-
+saveAll("2",True)
